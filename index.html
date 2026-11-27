@@ -1,840 +1,421 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>スペイン語フラッシュカード</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="耳で覚えて毎日続ける、日本語話者のためのスペイン語練習">
+<style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}</style>
+<title>まいにちひとこと スペイン語</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;900&display=swap">
 <style>
-  :root {
-    --bg: #1A2340;
-    --bg-panel: #222d4d;
-    --card-front: #F0EDE4;
-    --card-back: #e8e0d0;
-    --accent: #C8923A;
-    --accent-light: #dba854;
-    --text-dark: #2a1f0e;
-    --text-light: #E8E4DC;
-    --text-muted: #8e9bb5;
-    --success: #5a9e6f;
-    --radius: 18px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text-light);
-    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    user-select: none;
-  }
-
-  /* ── Header ── */
-  header {
-    width: 100%;
-    max-width: 480px;
-    padding: 20px 20px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .app-title {
-    font-size: 13px;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-  }
-
-  .manage-btn {
-    background: none;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .manage-btn:hover { background: var(--accent); color: #fff; }
-
-  /* ── Theme Tabs ── */
-  .theme-tabs {
-    width: 100%;
-    max-width: 480px;
-    padding: 0 20px;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
-  .theme-tabs::-webkit-scrollbar { display: none; }
-
-  .tab {
-    flex-shrink: 0;
-    padding: 7px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    cursor: pointer;
-    border: none;
-    background: var(--bg-panel);
-    color: var(--text-muted);
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .tab.active {
-    background: var(--accent);
-    color: #fff;
-    font-weight: 600;
-  }
-
-  /* ── Progress ── */
-  .progress-area {
-    width: 100%;
-    max-width: 480px;
-    padding: 14px 20px 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .progress-bar-bg {
-    flex: 1;
-    height: 4px;
-    background: var(--bg-panel);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 4px;
-    transition: width 0.4s ease;
-  }
-  .progress-text {
-    font-size: 12px;
-    color: var(--text-muted);
-    min-width: 48px;
-    text-align: right;
-  }
-
-  /* ── Card Scene ── */
-  .card-scene {
-    width: 100%;
-    max-width: 480px;
-    padding: 10px 20px 0;
-    perspective: 1200px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card-wrapper {
-    width: 100%;
-    max-width: 440px;
-    aspect-ratio: 3/2;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-  }
-  .card-wrapper.flipped { transform: rotateY(180deg); }
-
-  .card-face {
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 28px;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-  }
-
-  .card-front {
-    background: var(--card-front);
-    color: var(--text-dark);
-  }
-  .card-back {
-    background: var(--card-back);
-    color: var(--text-dark);
-    transform: rotateY(180deg);
-  }
-
-  .card-label {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-
-  .card-main {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    font-size: clamp(22px, 6vw, 32px);
-    font-weight: 400;
-    color: #1a1208;
-    text-align: center;
-    line-height: 1.35;
-    letter-spacing: 0.01em;
-  }
-
-  .card-sub {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #7a6b52;
-    text-align: center;
-    font-style: italic;
-  }
-
-  .card-hint {
-    position: absolute;
-    bottom: 14px;
-    font-size: 11px;
-    color: #b0a090;
-    letter-spacing: 0.05em;
-  }
-
-  /* ── Answer Buttons ── */
-  .answer-btns {
-    width: 100%;
-    max-width: 480px;
-    padding: 16px 20px;
-    display: flex;
-    gap: 12px;
-  }
-  .answer-btns.hidden { opacity: 0; pointer-events: none; }
-
-  .btn-forgot, .btn-knew {
-    flex: 1;
-    padding: 14px;
-    border-radius: var(--radius);
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.15s, opacity 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .btn-forgot:active, .btn-knew:active { transform: scale(0.96); }
-
-  .btn-forgot {
-    background: var(--bg-panel);
-    color: #e07a7a;
-    border: 1px solid #e07a7a44;
-  }
-  .btn-knew {
-    background: var(--success);
-    color: #fff;
-  }
-
-  /* ── Nav ── */
-  .nav-area {
-    width: 100%;
-    max-width: 480px;
-    padding: 4px 20px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .nav-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    background: var(--bg-panel);
-    color: var(--text-light);
-    font-size: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-  }
-  .nav-btn:hover { background: #2e3d66; }
-  .nav-btn:disabled { opacity: 0.3; cursor: default; }
-
-  .card-counter {
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-
-  /* ── Complete Banner ── */
-  .complete-banner {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 40px 20px;
-    text-align: center;
-  }
-  .complete-banner.show { display: flex; }
-
-  .complete-emoji { font-size: 52px; }
-  .complete-title { font-size: 22px; font-weight: 700; color: var(--accent); }
-  .complete-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-  .restart-btn {
-    margin-top: 8px;
-    padding: 12px 28px;
-    border-radius: 24px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  /* ── Export Modal ── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 100;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .modal-overlay.show { display: flex; }
-
-  .modal {
-    background: #1e2b4a;
-    width: 100%;
-    max-width: 480px;
-    border-radius: 24px 24px 0 0;
-    padding: 20px 20px 40px;
-    max-height: 85vh;
-    overflow-y: auto;
-    animation: slideUp 0.3s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-  .modal-handle {
-    width: 36px;
-    height: 4px;
-    background: #4a5a80;
-    border-radius: 4px;
-    margin: 0 auto 20px;
-  }
-
-  .modal-title {
-    font-size: 17px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: var(--text-light);
-  }
-
-  .export-option {
-    background: var(--bg);
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: border-color 0.2s, background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .export-option:hover { border-color: var(--accent); background: #1e2b4a; }
-
-  .export-icon { font-size: 28px; flex-shrink: 0; }
-
-  .export-texts { flex: 1; }
-  .export-label { font-size: 15px; font-weight: 600; color: var(--text-light); }
-  .export-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
-
-  .export-arrow { color: var(--accent); font-size: 18px; }
-
-  .export-scope {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .scope-btn {
-    flex: 1;
-    padding: 9px;
-    border-radius: 10px;
-    border: 1px solid #3a4d70;
-    background: var(--bg);
-    color: var(--text-muted);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .scope-btn.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(200,146,58,0.1);
-    font-weight: 600;
-  }
-
-  .export-note {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 12px;
-    line-height: 1.6;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--success);
-    color: #fff;
-    padding: 10px 22px;
-    border-radius: 24px;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 200;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  .modal-close {
-    width: 100%;
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 12px;
-    background: var(--bg);
-    color: var(--text-muted);
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  /* Learned badge */
-  .learned-badge {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background: var(--success);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 20px;
-    letter-spacing: 0.05em;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .card-wrapper { transition: none; }
-    @keyframes slideUp { from { transform: none; } }
-  }
+/* layout: タブ + 一画面一つの大きな操作（耳で聞く→選ぶ→声に出す） */
+:root{--bg:#fff7e8;--card:#fff;--fg:#25304f;--sub:#5a6382;--line:#25304f;--ac:#c8372d;--on:#fff;--sun:#ffd447;--onsun:#25304f;--sea:#d5efee;--ok:#176b45;--okbg:#d9f2e3}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171c30;--card:#222945;--fg:#f4f1e8;--sub:#b9bed6;--line:#8d95bd;--ac:#ff8a72;--on:#171c30;--sun:#ffd447;--onsun:#171c30;--sea:#1f4750;--ok:#8be0b0;--okbg:#1d4234;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171c30;--card:#222945;--fg:#f4f1e8;--sub:#b9bed6;--line:#8d95bd;--ac:#ff8a72;--on:#171c30;--sun:#ffd447;--onsun:#171c30;--sea:#1f4750;--ok:#8be0b0;--okbg:#1d4234;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:500 16px/1.8 "Zen Maru Gothic",sans-serif}
+main{max-width:36rem;margin:auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:1.35rem;margin:0 0 12px;font-weight:900}h2{font-size:1.05rem;margin:0 0 6px;font-weight:900}p{margin:4px 0}
+nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+button,select,input,textarea{font:inherit;color:var(--fg);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 12px;min-width:0}
+button{cursor:pointer;font-weight:900;box-shadow:0 3px 0 var(--line)}button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+button:disabled{cursor:default}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+nav button{padding:6px 2px;font-size:.85rem}
+nav button[aria-pressed="true"],.sun{background:var(--sun);color:var(--onsun)}
+.main{background:var(--ac);color:var(--on);font-size:1.25rem;padding:16px;width:100%}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+.sea{background:var(--sea)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.row>*{flex:1}
+.col{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.es{font-size:1.7rem;font-weight:900;line-height:1.4;overflow-wrap:anywhere}
+.sub{color:var(--sub);font-size:.85rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}.stats b{display:block;font-size:1.7rem}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+.cal span{aspect-ratio:1;border-radius:50%;border:2px dashed var(--sub);display:grid;place-items:center;font-size:.75rem}
+.cal span.on{background:var(--sun);color:var(--onsun);border:2px solid var(--line);font-weight:900}.cal span.pad{border:0}
+.bar{height:10px;border-radius:6px;background:var(--sea);overflow:hidden;margin-bottom:12px}.bar i{display:block;height:100%;background:var(--ac)}
+.big{font-size:3rem;width:6rem;height:6rem;border-radius:50%;margin:8px auto;display:block}
+.good{background:var(--okbg);color:var(--ok)}.center{text-align:center}
+.list div{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding:8px 0}.list div>span{flex:1;min-width:0}
+.msg{border:2px solid var(--line);border-radius:16px;padding:10px 14px;margin-top:10px;background:var(--card);max-width:90%;overflow-wrap:anywhere}
+.me{margin-left:auto;background:var(--sea)}
+textarea{width:100%;box-sizing:border-box}label{display:block;margin-top:10px;font-size:.9rem}label>select,label>input{width:100%;box-sizing:border-box}
 </style>
 </head>
 <body>
-
-<header>
-  <span class="app-title">🇪🇸 スペイン語カード</span>
-  <button class="manage-btn" onclick="openModal()">📤 データ出力</button>
-</header>
-
-<div class="theme-tabs" id="themeTabs"></div>
-
-<div class="progress-area">
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
-  </div>
-  <div class="progress-text" id="progressText">0 / 0</div>
-</div>
-
-<div class="card-scene" id="cardScene">
-  <div class="card-wrapper" id="cardWrapper" onclick="flipCard()">
-    <div class="card-face card-front" id="cardFront">
-      <span class="card-label">Español</span>
-      <div class="card-main" id="cardES"></div>
-      <div class="card-sub" id="cardNote"></div>
-      <span class="card-hint">タップしてめくる</span>
-    </div>
-    <div class="card-face card-back" id="cardBack">
-      <span class="card-label">日本語</span>
-      <div class="card-main" id="cardJA" style="font-family: inherit; font-size: clamp(18px,5vw,26px);"></div>
-      <span class="card-hint">タップして戻す</span>
-    </div>
-  </div>
-</div>
-
-<div class="complete-banner" id="completeBanner">
-  <div class="complete-emoji">🎉</div>
-  <div class="complete-title">テーマ完了！</div>
-  <div class="complete-sub" id="completeStats"></div>
-  <button class="restart-btn" onclick="restartTheme()">もう一度練習する</button>
-</div>
-
-<div class="answer-btns" id="answerBtns">
-  <button class="btn-forgot" onclick="markCard(false)">× 覚えてない</button>
-  <button class="btn-knew" onclick="markCard(true)">✓ 覚えた！</button>
-</div>
-
-<div class="nav-area">
-  <button class="nav-btn" id="prevBtn" onclick="prevCard()">‹</button>
-  <span class="card-counter" id="cardCounter"></span>
-  <button class="nav-btn" id="nextBtn" onclick="nextCard()">›</button>
-</div>
-
-<!-- Export Modal -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📤 データ出力</div>
-
-    <div class="export-scope">
-      <button class="scope-btn active" id="scopeAll" onclick="setScope('all')">全テーマ</button>
-      <button class="scope-btn" id="scopeCurrent" onclick="setScope('current')">現在のテーマのみ</button>
-    </div>
-
-    <div class="export-option" onclick="exportCSV()">
-      <div class="export-icon">📊</div>
-      <div class="export-texts">
-        <div class="export-label">CSV出力（スプレッドシート用）</div>
-        <div class="export-desc">Google スプレッドシートやExcelにインポート可能。テーマ・スペイン語・日本語・補足・学習状況を含む。</div>
-      </div>
-      <div class="export-arrow">›</div>
-    </div>
-
-    <div class="export-option" onclick="exportJSON()">
-      <div class="export-icon">🗂️</div>
-      <div class="export-texts">
-        <div class="export-label">JSON出力（開発者向け）</div>
-        <div class="export-desc">将来のスプレッドシート連携実装時のデータ確認や、バックアップとして使用可能。</div>
-      </div>
-      <div class="export-arrow">›</div>
-    </div>
-
-    <p class="export-note">
-      💡 将来はスプレッドシートからカードを読み込み、<br>学習状況を自動で書き戻す予定です。
-    </p>
-
-    <button class="modal-close" onclick="closeModal()">閉じる</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
+<main>
+<h1>まいにちひとこと スペイン語</h1>
+<nav id="nav"></nav>
+<div id="view" aria-live="polite"></div>
+<p class="sub" id="store"></p>
+</main>
 <script>
-// ══ DATA ══
-let themes = [
-  {
-    id: 0,
-    name: "📅 日付の予定",
-    cards: [
-      { es: "enero", ja: "1月", note: "" },
-      { es: "febrero", ja: "2月", note: "" },
-      { es: "marzo", ja: "3月", note: "" },
-      { es: "abril", ja: "4月", note: "" },
-      { es: "mayo", ja: "5月", note: "" },
-      { es: "junio", ja: "6月", note: "" },
-      { es: "julio", ja: "7月", note: "" },
-      { es: "agosto", ja: "8月", note: "" },
-      { es: "septiembre", ja: "9月", note: "" },
-      { es: "octubre", ja: "10月", note: "" },
-      { es: "noviembre", ja: "11月", note: "" },
-      { es: "diciembre", ja: "12月", note: "" },
-      { es: "lunes", ja: "月曜日", note: "" },
-      { es: "martes", ja: "火曜日", note: "" },
-      { es: "miércoles", ja: "水曜日", note: "" },
-      { es: "jueves", ja: "木曜日", note: "" },
-      { es: "viernes", ja: "金曜日", note: "" },
-      { es: "sábado", ja: "土曜日", note: "" },
-      { es: "domingo", ja: "日曜日", note: "" },
-      { es: "¿Cuándo vas a hacerlo?", ja: "いつそれをしますか？", note: "" },
-      { es: "El martes voy al gimnasio.", ja: "火曜日にジムに行きます。", note: "" },
-      { es: "Tengo una cita el 3 de mayo.", ja: "5月3日に予約があります。", note: "" },
-      { es: "¿Qué día es hoy?", ja: "今日は何曜日ですか？", note: "" },
-      { es: "Hoy es miércoles.", ja: "今日は水曜日です。", note: "" },
-    ]
-  },
-  {
-    id: 1,
-    name: "⏰ 時間",
-    cards: [
-      { es: "la hora", ja: "時間／時刻", note: "" },
-      { es: "el minuto", ja: "分", note: "" },
-      { es: "el segundo", ja: "秒", note: "" },
-      { es: "la mañana", ja: "午前・朝", note: "" },
-      { es: "la tarde", ja: "午後", note: "" },
-      { es: "la noche", ja: "夜", note: "" },
-      { es: "el mediodía", ja: "正午", note: "" },
-      { es: "la medianoche", ja: "深夜0時", note: "" },
-      { es: "¿Qué hora es?", ja: "何時ですか？", note: "" },
-      { es: "Son las tres.", ja: "3時です。", note: "" },
-      { es: "A las ocho voy al trabajo.", ja: "8時に仕事に行きます。", note: "" },
-      { es: "¿A qué hora empieza?", ja: "何時に始まりますか？", note: "" },
-      { es: "En diez minutos llega el tren.", ja: "あと10分で電車が来ます。", note: "" },
-      { es: "Faltan cinco minutos para las nueve.", ja: "9時まであと5分です。", note: "" },
-      { es: "¿Cuándo te despiertas?", ja: "いつ起きますか？", note: "" },
-    ]
-  },
-  {
-    id: 2,
-    name: "🌅 1日の行動",
-    cards: [
-      { es: "despertarse", ja: "目を覚ます", note: "再帰動詞" },
-      { es: "levantarse", ja: "起き上がる・起床する", note: "再帰動詞" },
-      { es: "lavarse la cara", ja: "顔を洗う", note: "" },
-      { es: "cepillarse los dientes", ja: "歯を磨く", note: "" },
-      { es: "ducharse", ja: "シャワーを浴びる", note: "再帰動詞" },
-      { es: "vestirse", ja: "服を着替える", note: "再帰動詞" },
-      { es: "desayunar", ja: "朝食を食べる", note: "" },
-      { es: "almorzar", ja: "昼食を食べる", note: "" },
-      { es: "cenar", ja: "夕食を食べる", note: "" },
-      { es: "trabajar", ja: "働く", note: "" },
-      { es: "estudiar", ja: "勉強する", note: "" },
-      { es: "descansar", ja: "休む", note: "" },
-      { es: "acostarse", ja: "横になる・就寝する", note: "再帰動詞" },
-      { es: "dormir", ja: "眠る", note: "" },
-      { es: "Me despierto a las siete.", ja: "私は7時に目覚めます。", note: "" },
-      { es: "Desayuno a las siete y media.", ja: "7時半に朝食を食べます。", note: "" },
-      { es: "Me acuesto a las once.", ja: "11時に就寝します。", note: "" },
-      { es: "Me cepillo los dientes antes de dormir.", ja: "寝る前に歯を磨きます。", note: "" },
-    ]
-  }
-];
+const U=(name,s)=>({name,items:s.trim().split('\n').map(l=>{const [es,ja]=l.split('|');return{es,ja}})});
+const UNITS=[
+U('あいさつ',`Buenos días.|おはよう
+Buenas tardes.|こんにちは
+Buenas noches.|こんばんは／おやすみ
+Hasta mañana.|また明日
+Que duermas bien.|よく寝てね
+¿Qué tal?|調子どう？
+Muy bien.|とてもいいよ
+¿Y tú?|あなたは？`),
+U('ありがとう・おいしい',`Gracias.|ありがとう
+Muchas gracias.|どうもありがとう
+De nada.|どういたしまして
+¡Qué rico!|おいしい！
+Está muy bueno.|（料理が）とてもおいしい
+Por favor.|お願いします
+Perdón.|ごめんね
+No pasa nada.|大丈夫だよ`),
+U('食卓',`A comer.|ごはんだよ
+Tengo hambre.|おなかがすいた
+Tengo sed.|のどがかわいた
+¿Quieres más?|もっとほしい？
+Un poco más, por favor.|もう少しちょうだい
+Estoy llena.|おなかいっぱい（女性）
+el agua|水
+el arroz|ごはん・お米`),
+U('朝と夜の家の中',`¡Despierta!|起きて！
+¿Dormiste bien?|よく眠れた？
+Vamos.|行こう
+¡Que te vaya bien!|いってらっしゃい
+Ya llegué.|ただいま（着いたよ）
+¡A bañarse!|お風呂に入ろう
+Ya es hora de dormir.|もう寝る時間だよ
+Espera un momento.|ちょっと待って`),
+U('気持ち',`Estoy cansada.|疲れた（女性）
+Estoy contenta.|うれしい（女性）
+Tengo sueño.|ねむい
+Tengo frío.|寒い
+Tengo calor.|暑い
+¡Qué bien!|よかったね！
+¡Qué divertido!|楽しい！
+Te quiero.|大好きだよ`),
+U('動詞（わたし・あなた）',`Quiero comer.|食べたい
+¿Quieres jugar?|遊びたい？
+Tengo tiempo.|時間があるよ
+Voy al súper.|スーパーに行くよ
+¿Adónde vas?|どこに行くの？
+Hago la cena.|夕ごはんを作るよ
+¿Puedes ayudarme?|手伝ってくれる？
+No sé.|わからない（知らない）`),
+U('聞き返す・たずねる',`¿Qué es esto?|これは何？
+¿Cómo se dice en español?|スペイン語で何て言うの？
+Otra vez, por favor.|もう一回お願い
+Más despacio, por favor.|もっとゆっくりお願い
+No entiendo.|わからない（理解できない）
+¿Qué significa?|どういう意味？
+¿Dónde está?|どこにあるの？
+¿A qué hora?|何時に？`),
+U('近況をひとこと',`Hoy fui de compras.|今日は買い物に行ったよ
+Hoy trabajé mucho.|今日はたくさん働いたよ
+Hoy hace buen tiempo.|今日はいい天気だね
+¿Qué hiciste hoy?|今日は何をしたの？
+¿Qué tal la escuela?|学校はどうだった？
+Fue un buen día.|いい一日だった
+Estudié español.|スペイン語を勉強したよ
+Mañana estoy libre.|明日は空いてるよ`),
+U('家族',`la familia|家族
+la madre|母
+el padre|父
+la hija|娘
+el hijo|息子
+el esposo|夫
+la abuela|祖母
+el abuelo|祖父
+la hermana|姉・妹
+el hermano|兄・弟`),
+U('食べ物・飲み物',`el pan|パン
+la leche|牛乳
+el huevo|卵
+la carne|肉
+el pescado|魚（食材）
+el pollo|鶏肉
+la verdura|野菜
+la fruta|果物
+la sopa|スープ
+el café|コーヒー
+el té|お茶
+el postre|デザート`),
+U('家の中の物',`la casa|家
+la cocina|台所
+el baño|お風呂場・トイレ
+la cama|ベッド
+la mesa|テーブル
+la silla|いす
+la puerta|ドア
+la ventana|窓
+el plato|お皿
+el vaso|コップ
+la llave|鍵
+el teléfono|電話`),
+U('数字',`uno|1
+dos|2
+tres|3
+cuatro|4
+cinco|5
+seis|6
+siete|7
+ocho|8
+nueve|9
+diez|10`),
+U('時・曜日',`hoy|今日
+ayer|きのう
+ahora|今
+luego|あとで
+lunes|月曜日
+martes|火曜日
+miércoles|水曜日
+jueves|木曜日
+viernes|金曜日
+sábado|土曜日
+domingo|日曜日
+el fin de semana|週末`),
+U('学校と外出',`la escuela|学校
+la tarea|宿題
+el libro|本
+el amigo|友だち（男性）
+la amiga|友だち（女性）
+el parque|公園
+la tienda|お店
+la estación|駅
+el tren|電車
+la playa|浜辺`),
+U('よく使う動詞（わたしが…）',`soy|私は〜です
+como|私は食べる
+bebo|私は飲む
+veo|私は見る
+escucho|私は聞く
+hablo|私は話す
+compro|私は買う
+duermo|私は眠る
+necesito|私は必要としている
+me gusta|私は好き（気に入っている）`),
+U('ようすを表す言葉',`grande|大きい
+pequeño|小さい
+caliente|熱い
+frío|冷たい
+bonito|きれい・すてき
+difícil|難しい
+fácil|簡単
+nuevo|新しい
+mucho|たくさん
+poco|少し`),
+U('天気と季節',`el sol|太陽
+la lluvia|雨
+el viento|風
+la nieve|雪
+Está lloviendo.|雨が降っているよ
+la primavera|春
+el verano|夏
+el otoño|秋
+el invierno|冬`),
+U('あいづち',`Sí.|はい・うん
+Claro.|もちろん
+¿De verdad?|本当？
+Vale.|オーケー（スペインでよく使う）
+Quizás.|たぶんね
+Yo también.|私も
+¡Qué pena!|残念！
+A ver.|どれどれ`)];
+const ITEMS=UNITS.flatMap(u=>u.items);
+const MISSIONS=['Buenos días.','Gracias.','¡Qué rico!','Buenas noches.','Que duermas bien.'];
+const SCENES={'朝ごはん':'朝ごはんの食卓','夕ごはん':'夕ごはんの食卓','おやすみ前':'寝る前の家の中','今日あったこと':'一日の終わりに今日の出来事を話す場面'};
 
-// Learned tracking per theme: Set of card indices
-let learnedSets = [new Set(), new Set(), new Set()];
+const day=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const after=n=>{const d=new Date();d.setDate(d.getDate()+n);return day(d)};
+const fresh=()=>({cards:{},days:{},said:{},cue:'',voice:'es-ES',rate:.85,extra:[],talks:0,at:0});
+let S=fresh(),ref=null,saving=false,dirty=false,sample=null,tab='home',ses=null,chat=null;
+const clean=d=>Object.assign(fresh(),d||{});
+try{S=clean(JSON.parse(localStorage.getItem('hitokoto')))}catch(e){}
+function save(){S.at=Date.now();try{localStorage.setItem('hitokoto',JSON.stringify(S))}catch(e){}push()}
+async function push(){
+ if(!ref)return;if(saving){dirty=true;return}saving=true;
+ try{await ref.set(JSON.parse(JSON.stringify(S)))}catch(e){note('クラウドに保存できませんでした。この端末には残っています。')}
+ saving=false;if(dirty){dirty=false;push()}
+}
+const note=t=>document.getElementById('store').textContent=t;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const all=()=>ITEMS.concat(S.extra);
+const find=es=>all().find(x=>x.es===es);
 
-// ══ STATE ══
-let currentTheme = 0;
-let currentIndex = 0;
-let isFlipped = false;
-let showComplete = false;
+function speak(text,slow){
+ if(!window.speechSynthesis){note('この画面では音声が出せません。SafariやChromeで開いてみてください。');return}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang=S.voice;u.rate=slow?.55:S.rate;
+ const vs=speechSynthesis.getVoices(),v=vs.find(v=>v.lang.replace('_','-')===S.voice)||vs.find(v=>v.lang.startsWith('es'));
+ if(v)u.voice=v;else if(vs.length)note('スペイン語の声が見つかりません。端末の読み上げ設定でスペイン語の声を追加してください。');
+ speechSynthesis.speak(u);
+}
+const due=()=>Object.keys(S.cards).filter(k=>S.cards[k].due<=day()&&find(k)).sort((a,b)=>S.cards[a].box-S.cards[b].box);
+const newOnes=n=>all().filter(x=>!S.cards[x.es]).slice(0,n).map(x=>x.es);
+function grade(es,ok){
+ const c=S.cards[es]||{box:0};c.box=ok?Math.min(c.box+1,5):0;
+ c.due=after(ok?[1,1,3,7,14,30][c.box]:1);S.cards[es]=c;
+}
+function stamp(){S.days[day()]=1}
 
-// ══ INIT ══
-function init() {
-  renderTabs();
-  loadTheme(0);
+function start(mini,unit){
+ let rev=due().slice(0,mini?3:6),nw=[];
+ if(unit!=null){rev=[];nw=UNITS[unit].items.filter(x=>!S.cards[x.es]).slice(0,3).map(x=>x.es);if(!nw.length)rev=shuffle(UNITS[unit].items.map(x=>x.es)).slice(0,5)}
+ else if(!mini)nw=newOnes(rev.length>=6?1:3);
+ else if(!rev.length)nw=newOnes(1);
+ if(!rev.length&&!nw.length)rev=shuffle(Object.keys(S.cards).filter(find)).slice(0,3);
+ const steps=[];nw.forEach(es=>steps.push(['new',es]));
+ shuffle(rev.concat(nw)).forEach(es=>steps.push(['quiz',es]));
+ shuffle(rev.concat(nw)).slice(0,mini?2:4).forEach(es=>steps.push(['say',es]));
+ ses={steps,i:0,miss:new Set()};tab='lesson';render();auto();
+}
+function auto(){const s=ses&&ses.steps[ses.i];if(s&&s[0]!=='say')speak(s[1])}
+function next(){ses.i++;if(ses.i>=ses.steps.length){stamp();save()}render();auto()}
+const listen=es=>`<div class="row"><button data-say="${esc(es)}">▶ もう一回</button><button data-slow="${esc(es)}">ゆっくり</button></div>`;
+function bind(){
+ document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+ document.querySelectorAll('[data-slow]').forEach(b=>b.onclick=()=>speak(b.dataset.slow,true));
 }
 
-function renderTabs() {
-  const el = document.getElementById('themeTabs');
-  el.innerHTML = themes.map((t, i) =>
-    `<button class="tab ${i===currentTheme?'active':''}" onclick="loadTheme(${i})">${t.name}</button>`
-  ).join('');
-}
-
-function loadTheme(idx) {
-  currentTheme = idx;
-  currentIndex = 0;
-  isFlipped = false;
-  showComplete = false;
-  renderTabs();
-  renderCard();
-  updateProgress();
-}
-
-function renderCard() {
-  const theme = themes[currentTheme];
-  const banner = document.getElementById('completeBanner');
-  const scene = document.getElementById('cardScene');
-  const answerBtns = document.getElementById('answerBtns');
-
-  if (showComplete || theme.cards.length === 0) {
-    banner.classList.add('show');
-    scene.style.display = 'none';
-    answerBtns.classList.add('hidden');
-    if (theme.cards.length === 0) {
-      document.getElementById('completeStats').textContent = 'カードがありません。カード編集から追加してください。';
-    } else {
-      const learned = learnedSets[currentTheme].size;
-      document.getElementById('completeStats').textContent =
-        `${theme.cards.length}枚中 ${learned}枚 覚えました！\n残り ${theme.cards.length - learned}枚を繰り返し練習しましょう。`;
-    }
-    document.getElementById('cardCounter').textContent = '';
-    document.getElementById('prevBtn').disabled = true;
-    document.getElementById('nextBtn').disabled = true;
-    return;
-  }
-
-  banner.classList.remove('show');
-  scene.style.display = 'flex';
-  answerBtns.classList.remove('hidden');
-
-  const card = theme.cards[currentIndex];
-  const wrapper = document.getElementById('cardWrapper');
-
-  // Reset flip without animation flicker
-  wrapper.style.transition = 'none';
-  wrapper.classList.remove('flipped');
-  isFlipped = false;
-  void wrapper.offsetWidth;
-  wrapper.style.transition = '';
-
-  document.getElementById('cardES').textContent = card.es;
-  document.getElementById('cardJA').textContent = card.ja;
-  document.getElementById('cardNote').textContent = card.note || '';
-
-  // Learned badge
-  const existingBadge = document.querySelectorAll('.learned-badge');
-  existingBadge.forEach(b => b.remove());
-  if (learnedSets[currentTheme].has(currentIndex)) {
-    const badge = document.createElement('span');
-    badge.className = 'learned-badge';
-    badge.textContent = '覚えた ✓';
-    document.getElementById('cardFront').appendChild(badge);
-  }
-
-  document.getElementById('cardCounter').textContent = `${currentIndex + 1} / ${theme.cards.length}`;
-  document.getElementById('prevBtn').disabled = currentIndex === 0;
-  document.getElementById('nextBtn').disabled = currentIndex === theme.cards.length - 1;
-}
-
-function updateProgress() {
-  const theme = themes[currentTheme];
-  const total = theme.cards.length;
-  const learned = learnedSets[currentTheme].size;
-  const pct = total > 0 ? (learned / total * 100) : 0;
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent = `${learned} / ${total}`;
-}
-
-function flipCard() {
-  const wrapper = document.getElementById('cardWrapper');
-  isFlipped = !isFlipped;
-  wrapper.classList.toggle('flipped', isFlipped);
-}
-
-function prevCard() {
-  if (currentIndex > 0) { currentIndex--; renderCard(); }
-}
-
-function nextCard() {
-  const theme = themes[currentTheme];
-  if (currentIndex < theme.cards.length - 1) { currentIndex++; renderCard(); }
-  else { showComplete = true; renderCard(); }
-}
-
-function markCard(knew) {
-  if (knew) {
-    learnedSets[currentTheme].add(currentIndex);
-  } else {
-    learnedSets[currentTheme].delete(currentIndex);
-  }
-  updateProgress();
-
-  // Small delay then next
-  setTimeout(() => {
-    const theme = themes[currentTheme];
-    if (currentIndex < theme.cards.length - 1) {
-      currentIndex++;
-      renderCard();
-    } else {
-      showComplete = true;
-      renderCard();
-    }
-  }, 180);
-}
-
-function restartTheme() {
-  showComplete = false;
-  currentIndex = 0;
-  renderCard();
-  updateProgress();
-}
-
-// ══ EXPORT ══
-let exportScope = 'all';
-
-function setScope(scope) {
-  exportScope = scope;
-  document.getElementById('scopeAll').classList.toggle('active', scope === 'all');
-  document.getElementById('scopeCurrent').classList.toggle('active', scope === 'current');
-}
-
-function getExportThemes() {
-  return exportScope === 'all' ? themes : [themes[currentTheme]];
-}
-
-function exportCSV() {
-  const rows = [['テーマ', 'スペイン語', '日本語', '補足', '学習状況', '出力日時']];
-  const now = new Date().toLocaleString('ja-JP');
-
-  getExportThemes().forEach((theme, ti) => {
-    const themeIdx = exportScope === 'all' ? ti : currentTheme;
-    theme.cards.forEach((card, ci) => {
-      const status = learnedSets[themeIdx].has(ci) ? '覚えた' : '未習';
-      rows.push([theme.name, card.es, card.ja, card.note || '', status, now]);
-    });
+function lesson(v){
+ if(ses.i>=ses.steps.length){
+  v.innerHTML=`<div class="card center sea"><div class="es">¡Muy bien!</div><p>今日のスタンプを押しました。ここで終わって大丈夫です。</p></div>${mission()}<button class="main" id="home">ホームへ</button>`;
+  $('#home').onclick=()=>go('home');bindMission();return;
+ }
+ const [type,es]=ses.steps[ses.i],it=find(es),bar=`<div class="bar"><i style="width:${ses.i/ses.steps.length*100}%"></i></div>`;
+ if(type==='new'){
+  v.innerHTML=bar+`<div class="card center"><p class="sub">新しいひとこと。聞いて、まねして2回言おう</p><button class="big sun" data-say="${esc(es)}" aria-label="音を聞く">▶</button><div class="es" lang="es">${esc(es)}</div><p>${esc(it.ja)}</p>${listen(es)}</div><button class="main" id="n">言えた、次へ</button>`;
+  $('#n').onclick=next;
+ }else if(type==='quiz'){
+  const opts=shuffle([it.ja,...shuffle(all().filter(x=>x.ja!==it.ja)).slice(0,2).map(x=>x.ja)]);
+  v.innerHTML=bar+`<div class="card center"><p class="sub">耳だけで。どんな意味？</p><button class="big sun" data-say="${esc(es)}" aria-label="音を聞く">▶</button>${listen(es)}</div><div class="col">${opts.map(o=>`<button class="opt">${esc(o)}</button>`).join('')}</div><div id="fb"></div>`;
+  v.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+   const ok=b.textContent===it.ja;if(!ok){ses.miss.add(es);b.textContent='× '+b.textContent}
+   v.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.textContent===it.ja){x.classList.add('good');x.textContent='○ '+it.ja}});
+   $('#fb').innerHTML=`<div class="card center" style="margin-top:14px"><div class="es" lang="es">${esc(es)}</div><p>${ok?'正解！':'大丈夫。明日また出ます。'}</p></div><button class="main" id="n">次へ</button>`;
+   $('#n').onclick=()=>{grade(es,ok);save();next()};
   });
-
-  const bom = '\uFEFF'; // UTF-8 BOM for Excel/Sheets compatibility
-  const csv = bom + rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
-  downloadFile(csv, 'spanish-cards.csv', 'text/csv;charset=utf-8;');
-  showToast('CSVを出力しました ✓');
-}
-
-function exportJSON() {
-  const now = new Date().toLocaleString('ja-JP');
-  const data = {
-    exportedAt: now,
-    themes: getExportThemes().map((theme, ti) => {
-      const themeIdx = exportScope === 'all' ? ti : currentTheme;
-      return {
-        name: theme.name,
-        cards: theme.cards.map((card, ci) => ({
-          es: card.es,
-          ja: card.ja,
-          note: card.note || '',
-          learned: learnedSets[themeIdx].has(ci)
-        }))
-      };
-    })
+ }else{
+  v.innerHTML=bar+`<div class="card center"><p class="sub">スペイン語で声に出してみよう</p><div class="es">${esc(it.ja)}</div></div><div id="ans"><button class="main" id="show">答えを聞く</button></div>`;
+  $('#show').onclick=()=>{
+   $('#ans').innerHTML=`<div class="card center"><div class="es" lang="es">${esc(es)}</div>${listen(es)}</div><div class="row"><button id="no">まだむずかしい</button><button id="yes" class="sun">言えた！</button></div>`;
+   bind();speak(es);
+   $('#yes').onclick=()=>{if(!ses.miss.has(es))grade(es,true);save();next()};
+   $('#no').onclick=()=>{grade(es,false);save();next()};
   };
-  const json = JSON.stringify(data, null, 2);
-  downloadFile(json, 'spanish-cards.json', 'application/json');
-  showToast('JSONを出力しました ✓');
+ }
+ bind();
 }
 
-function downloadFile(content, filename, type) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+function mission(){
+ const pool=MISSIONS.concat(Object.keys(S.cards).filter(k=>!MISSIONS.includes(k)&&find(k)&&S.cards[k].box>=2));
+ const es=pool[Math.floor(Date.now()/864e5)%pool.length],done=S.said[day()];
+ return `<div class="card"><h2>今日使ってみるひとこと</h2><div class="es" lang="es">${esc(es)}</div><p>${esc(find(es).ja)}</p><div class="row"><button data-say="${esc(es)}">▶ 聞く</button><button id="said" class="${done?'good':''}">${done?'✓ 使えた':'使えた！'}</button></div></div>`;
+}
+function bindMission(){bind();const b=$('#said');if(b)b.onclick=()=>{if(S.said[day()])delete S.said[day()];else{S.said[day()]=1;stamp()}save();render()}}
+
+function home(v){
+ const n=new Date(),y=n.getFullYear(),m=n.getMonth(),len=new Date(y,m+1,0).getDate();
+ let cal='<span class="pad"></span>'.repeat(new Date(y,m,1).getDay());
+ for(let d=1;d<=len;d++){const on=S.days[day(new Date(y,m,d))];cal+=`<span class="${on?'on':''}" ${on?'aria-label="'+d+'日 達成"':''}>${d}</span>`}
+ const last=Object.keys(S.days).sort().pop(),gap=last?Math.round((new Date(day())-new Date(last))/864e5):0;
+ const hello=!last?'まずは1分。聞くだけでも始まりです。':gap===0?'今日はもうできています。おまけはいつでも。':gap>2?'おかえりなさい。スタンプは消えません。1分から再開しよう。':'今日もひとことから。';
+ v.innerHTML=`<div class="card sea"><p>${hello}</p>${S.cue?`<p><b>いつもの合図：${esc(S.cue)}</b></p>`:''}</div>
+ <button class="main" id="s5">今日のレッスン（約5分）</button><div class="row" style="margin-bottom:14px"><button id="s1">疲れた日の1分だけ</button></div>
+ ${mission()}
+ <div class="card stats"><div><b>${Object.keys(S.days).length}</b>通算の日</div><div><b>${Object.keys(S.cards).length}</b>出会った言葉</div><div><b>${Object.keys(S.said).length}</b>使えた日</div></div>
+ <div class="card"><h2>${m+1}月のスタンプ</h2><div class="cal">${'日月火水木金土'.split('').map(c=>`<span class="pad">${c}</span>`).join('')}${cal}</div></div>
+ <div class="card"><h2>続けるための設定</h2><label>いつやる？（毎日することの直後がおすすめ）<input id="cue" value="${esc(S.cue)}" placeholder="例：朝のお茶を入れたら"></label>
+ <label>声の種類（身近な話し方に近いもの）<select id="voice"><option value="es-ES">スペインのスペイン語</option><option value="es-MX">メキシコのスペイン語</option><option value="es-US">中南米系（米国）のスペイン語</option></select></label>
+ <label>読む速さ<select id="rate"><option value="0.7">ゆっくり</option><option value="0.85">少しゆっくり</option><option value="1">ふつう</option></select></label></div>`;
+ $('#s5').onclick=()=>start(false);$('#s1').onclick=()=>start(true);
+ $('#voice').value=S.voice;$('#rate').value=String(S.rate);
+ $('#cue').onchange=e=>{S.cue=e.target.value.trim();save();render()};
+ $('#voice').onchange=e=>{S.voice=e.target.value;save();speak('Buenos días.')};
+ $('#rate').onchange=e=>{S.rate=+e.target.value;save();speak('Buenos días.')};
+ bindMission();
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+function words(v,msg=''){
+ const groups=UNITS.map((u,i)=>[u.name,u.items,i]);if(S.extra.length)groups.push(['自分の言葉（追加・会話から）',S.extra,null]);
+ v.innerHTML=`<div class="card sea"><h2>言葉を自分で追加</h2><p class="sub">よく聞く言葉や使いたい言葉を入れると、復習と会話練習に出ます。つづりは確かめてから入れると安心です。</p><label>スペイン語<input id="aes" lang="es" autocapitalize="off"></label><label>意味（日本語）<input id="aja"></label><div class="row"><button id="add" class="sun">追加する</button></div><p id="amsg" role="status">${esc(msg)}</p></div>`+groups.map(([name,items,i])=>`<div class="card"><h2>${name}</h2><p class="sub">${items.filter(x=>S.cards[x.es]).length} / ${items.length} に出会った</p>${i!=null?`<div class="row"><button data-unit="${i}">この場面を練習</button></div>`:''}<details><summary>一覧を見て聞く</summary><div class="list">${items.map(x=>`<div><span><b lang="es">${esc(x.es)}</b><br>${esc(x.ja)}</span><button data-say="${esc(x.es)}" aria-label="聞く">▶</button></div>`).join('')}</div></details></div>`).join('');
+ $('#add').onclick=()=>{
+  const es=$('#aes').value.trim(),ja=$('#aja').value.trim();
+  if(!es||!ja){$('#amsg').textContent='スペイン語と意味の両方を入れてください。';return}
+  if(find(es)){$('#amsg').textContent='その言葉はもう入っています。';return}
+  if(S.extra.length>=300){$('#amsg').textContent='自分の言葉は300個までです。';return}
+  S.extra=S.extra.concat({es,ja});S.cards[es]={box:0,due:day()};save();words(v,es+' を追加しました。');
+ };
+ v.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>start(false,+b.dataset.unit));bind();
 }
 
-// ══ MODAL ══
-function openModal() {
-  document.getElementById('modalOverlay').classList.add('show');
+function history(){
+ const keys=Object.keys(S.cards).filter(find);
+ const fmt=a=>a.slice(0,40).map(k=>`${k}（${find(k).ja}）`).join('、')||'まだなし';
+ return `できる言葉: ${fmt(keys.filter(k=>S.cards[k].box>=2))}\n練習中の言葉: ${fmt(keys.filter(k=>S.cards[k].box<2))}`;
+}
+const level='学習者は日本語を話すスペイン語初心者の大人。';
+const geminiPrompt=scene=>`あなたはスペイン語の会話相手です。${level}\n場面: ${SCENES[scene]}\n学習履歴\n${history()}\nルール: 家族のように話す。一回に短い一文だけ、ゆっくり話す。「練習中の言葉」を多めに使う。新しい言葉は一回に一つまで。私が日本語で答えたら、スペイン語の言い方を教えて言い直させる。間違いは一つだけ、やさしく直す。「日本語で」と言ったら日本語で説明する。あなたから会話を始めてください。`;
+
+function talk(v){
+ if(!chat)chat={scene:'朝ごはん',turns:[],busy:false,err:'',draft:''};
+ const opts=Object.keys(SCENES).map(s=>`<option ${s===chat.scene?'selected':''}>${s}</option>`).join('');
+ v.innerHTML=`<div class="card" ${window.claude?'':'hidden'}><h2>ここでAIと文字で会話</h2><p class="sub">AIの返事は音で聞けます。学習した言葉がAIに伝わります。あなたのClaudeの利用枠を使います。AIの訳や直しは間違うことがあります。</p><label>場面<select id="scene">${opts}</select></label>
+ <div id="log">${chat.turns.map((t,i)=>t.me?`<div class="msg me">${esc(t.me)}</div>`:`<div class="msg"><b lang="es">${esc(t.es)}</b><br><span class="sub">${i===chat.open?esc(t.ja):''}</span>${t.fix?`<p>直し：${esc(t.fix)}</p>`:''}${t.hint?`<p class="sub">返事の例：<span lang="es">${esc(t.hint)}</span></p>`:''}<div class="row"><button data-say="${esc(t.es)}">▶ 聞く</button><button data-ja="${i}">意味</button><button data-keep="${i}">${find(t.es)?'✓ 登録ずみ':'覚える'}</button></div></div>`).join('')}</div>
+ <p>${chat.busy?'考えています…':esc(chat.err)}</p>
+ ${!sample?'<p>この画面ではアプリ内の会話が使えません。下の「Geminiで声の会話」を使ってください。</p>':chat.turns.length?`<textarea id="in" rows="2" aria-label="返事" placeholder="スペイン語で（日本語まじりでもOK）">${esc(chat.draft)}</textarea><div class="row"><button id="send" class="sun" ${chat.busy?'disabled':''}>送る</button><button id="reset" ${chat.busy?'disabled':''}>やり直す</button></div>`:`<div class="row"><button id="begin" class="sun" ${chat.busy?'disabled':''}>会話をはじめる</button></div>`}</div>
+ <div class="card sea"><h2>Geminiで声の会話</h2><p>下のボタンで「今の学習履歴つきのお願い文」をコピーして、Geminiに貼り付けて送ります。そのあと音声会話に切り替えてみてください。</p><div class="row"><button id="copy">お願い文をコピー</button></div><textarea id="gp" rows="5" readonly aria-label="お願い文" hidden></textarea><div class="row"><button id="did">声の練習をした（スタンプ）</button></div></div>`;
+ $('#scene').onchange=e=>{if(chat.busy)return;chat={scene:e.target.value,turns:[],busy:false,err:'',draft:''};render()};
+ if($('#in'))$('#in').oninput=e=>chat.draft=e.target.value;
+ if($('#begin'))$('#begin').onclick=()=>ask();
+ if($('#send'))$('#send').onclick=()=>{const t=chat.draft.trim();if(!t)return;chat.turns.push({me:t});chat.draft='';ask()};
+ if($('#reset'))$('#reset').onclick=()=>{chat=null;render()};
+ v.querySelectorAll('[data-ja]').forEach(b=>b.onclick=()=>{chat.open=+b.dataset.ja;render()});
+ v.querySelectorAll('[data-keep]').forEach(b=>b.onclick=()=>{const t=chat.turns[+b.dataset.keep];if(!find(t.es)){S.extra=S.extra.concat({es:t.es,ja:t.ja}).slice(-300);S.cards[t.es]={box:0,due:day()};save();render()}});
+ $('#copy').onclick=async e=>{const b=e.target,p=geminiPrompt(chat.scene),a=$('#gp');a.value=p;try{await navigator.clipboard.writeText(p);b.textContent='コピーしました'}catch(x){a.hidden=false;a.select();b.textContent='下の文を長押しでコピー'}};
+ $('#did').onclick=e=>{stamp();S.talks++;save();e.target.textContent='✓ スタンプを押しました'};
+ bind();
+}
+async function ask(){
+ const c=chat;c.busy=true;c.err='';render();
+ const rules=`あなたはスペイン語会話の練習相手です。${level}\n場面: ${SCENES[c.scene]}\n声の地域: ${S.voice}\n${history()}\n家族のようにやさしく、スペイン語は6語以内の短い一文。習った言葉を優先し、新しい言葉は一つまで。必ずJSONだけで返す: {"es":"あなたのスペイン語の発言","ja":"その日本語訳","fix":"直前の学習者の発言の直しを日本語で一つだけ。不要なら空文字","hint":"学習者が次に返せる短いスペイン語の例"}`;
+ const msgs=[{role:'user',content:rules+'\n会話を始めてください。'}];
+ c.turns.slice(-12).forEach(t=>msgs.push(t.me?{role:'user',content:t.me}:{role:'assistant',content:JSON.stringify({es:t.es,ja:t.ja,fix:t.fix,hint:t.hint})}));
+ if(msgs[msgs.length-1].role!=='user')msgs.push({role:'user',content:'続けてください。'});
+ try{
+  const r=await sample.json(msgs,{modelTier:'quick',cache:false});
+  if(!r||!r.es)throw{code:'invalid_json'};
+  c.turns.push({es:String(r.es),ja:String(r.ja||''),fix:String(r.fix||''),hint:String(r.hint||'')});
+  if(c.turns.some(t=>t.me)){stamp();S.talks++;save()}
+  if(chat===c&&tab==='talk')speak(String(r.es));
+ }catch(e){
+  const last=c.turns[c.turns.length-1];if(last&&last.me){c.draft=last.me;c.turns.pop()}
+  if(['not_granted','sampling_disabled','not_declared','capability_disabled'].includes(e.code)){sample=null}
+  else c.err=e.code==='rate_limited'?'利用が混み合っているか、利用枠の上限です。時間をおいて試してください。':'返事を受け取れませんでした。もう一度押してください。';
+ }
+ c.busy=false;if(tab==='talk')render();
 }
 
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('show');
+const TABS={home:'ホーム',lesson:'レッスン',words:'ことば',talk:'会話'};
+function go(t){if(window.speechSynthesis)speechSynthesis.cancel();if(t==='lesson'){if(!ses||ses.i>=ses.steps.length)return start(false)}tab=t;render();window.scrollTo(0,0)}
+function render(){
+ $('#nav').innerHTML=Object.entries(TABS).map(([k,n])=>`<button data-t="${k}" aria-pressed="${k===tab}">${n}</button>`).join('');
+ $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+ ({home,lesson,words:v=>words(v),talk})[tab]($('#view'));
 }
-
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
-
-init();
+render();
+if(window.speechSynthesis)speechSynthesis.getVoices();
+(async()=>{
+ if(!window.claude){note('学習の記録はこの端末に保存されます。');return}
+ claude.use('sample').then(s=>{sample=s;if(tab==='talk')render()});
+ try{
+  const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
+  const id=user&&await user.id();
+  if(!db||!id){note('学習の記録はこの端末に保存されます。');return}
+  const r=db.doc('data/users/'+id+'/hitokoto'),snap=await r.get();
+  ref=r;
+  if(snap.exists&&(snap.data().at||0)>S.at){S=clean(JSON.parse(JSON.stringify(snap.data())));if(tab==='home')render()}else if(S.at)push();
+ }catch(e){note('学習の記録はこの端末に保存されます。')}
+})();
 </script>
 </body>
 </html>
